@@ -1,2 +1,9 @@
 /* CSS file placeholder. */
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  /* override "injected stylesheet" ? */
+}
 
+md-toolbar .md-icon-button ng-md-icon {
+  fill: rgba(255,255,255,0.87);
+}

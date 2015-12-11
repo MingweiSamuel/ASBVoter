@@ -2,56 +2,61 @@
 <html lang="en" ng-app="VoterApp">
 <head>
   <title>ASBVoter2</title>
+  <link rel="stylesheet" href="bower_components/roboto-fontface/css/roboto-fontface.css">
   <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
   <link rel="stylesheet" href="styles.css">
   
   <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-aria/angular-aria.js"></script>
   <script src="bower_components/ng-sortable/dist/ng-sortable.js"></script>
   <script src="bower_components/angular-material/angular-material.js"></script>
+  <script src="bower_components/angular-material-icons/angular-material-icons.js"></script>
+  <script src="bower_components/svg-morpheus/compile/unminified/svg-morpheus.js"></script>
 </head>
 
-<body ng-cloak="">
-  <div ng-controller="VoterController" layout="column">
-    <section layout="row" flex="">
-      <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+<body ng-cloak="" ng-controller="VoterController" layout="column">
+  <section layout="row" flex="">
+    
+    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
 
-        <md-toolbar class="md-theme-indigo">
-          <h1 class="md-toolbar-tools">Sidenav Left</h1>
-        </md-toolbar>
-        <md-content layout-padding="" ng-controller="LeftCtrl">
-          <md-button ng-click="close()" class="md-primary" hide-gt-md="">
-            Close Sidenav Left
-          </md-button>
-          <p hide-md="" show-gt-md="">
-            This sidenav is locked open on your device. To go back to the default behavior,
-            narrow your display.
-          </p>
-        </md-content>
-  
-      </md-sidenav>
-  
-      <md-content flex="" layout-padding="">
-  
-        <div layout="column" layout-fill="" layout-align="top center">
-          <p>
-          The left sidenav will 'lock open' on a medium (>=960px wide) device.
-          </p>
-  
-          <div>
-            <md-button ng-click="toggleLeft()" class="md-primary" hide-gt-md="">
-              Toggle left
-            </md-button>
-          </div>
-        </div>
-  
-        <div flex=""></div>
-  
+      <md-toolbar class="md-theme-indigo">
+        <h1 class="md-toolbar-tools">Sidenav Left</h1>
+      </md-toolbar>
+      <md-content layout-padding="" ng-controller="LeftCtrl">
+        <P>Hello to the content</P>
       </md-content>
-    </section>
-  </div>
-  
-  <h1 id="greeting">Test</h1>
 
+    </md-sidenav>
+
+    <md-content flex="">
+      
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <md-button class="md-icon-button" hide-gt-md="" ng-click="toggleLeft()" aria-label="Menu">
+            <ng-md-icon icon="menu"></ng-md-icon>
+          </md-button>
+          <h2>
+            <span>ASB Voter</span>
+          </h2>
+          <span flex=""></span>
+          <md-button class="md-icon-button" aria-label="Favorite">
+            <ng-md-icon icon="favorite"></ng-md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="More">
+            <ng-md-icon icon="more_vert"></ng-md-icon>
+          </md-button>
+        </div>
+      </md-toolbar>
+
+      <div layout="column" layout-fill="" layout-align="top center">
+        <p>
+        The left sidenav will 'lock open' on a medium (>=960px wide) device.
+        </p>
+      </div>
+
+    </md-content>
+  </section>
   <script src="main.js"></script>
 </body>
 </html>

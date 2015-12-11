@@ -1,4 +1,4 @@
-window.onload = function() {
+/*window.onload = function() {
   document.querySelector('#greeting').innerText =
     'Hello, World! It is ' + new Date();
 
@@ -23,14 +23,12 @@ window.onload = function() {
 
 function testWrite(str) {
   document.querySelector('#greeting').innerText += str;
-}
-
-//angular.module('VoterApp', ['ngMaterial']);
+}*/
 
 angular
-  .module('VoterApp', ['ngMaterial'])
+  .module('VoterApp', ['ngMaterial', 'ngMdIcons'])
   .controller('VoterController', function ($scope, $timeout, $mdSidenav, $log) {
-    $scope.toggleLeft = buildDelayedToggler('left');
+    $scope.toggleLeft = buildToggler('left');
     //$scope.toggleRight = buildToggler('right');
     //$scope.isOpenRight = function(){
     //  return $mdSidenav('right').isOpen();
