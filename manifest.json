@@ -1,0 +1,31 @@
+{
+  "key": "AAAAB3NzaC1yc2EAAAADAQABAAABAQDUrpxmYrJdHi4km3wcHOa5MiJnsQZ1oOD366LZ+1dIy98m2SzxcMYqp9zl8ZXO+1ts4t6Xxs3X+zliM2EEpAdBHZEnr4d2kLCp+7epfVwVGRifPgs5CkM/58Iw71ibdRwHoFIHYUU2ZBqHGE6gPG9pRJwEJZpX6a86dYGsl0KfaLvmcqA3Bi0cxf1HUKfqmerxOHYy0dt2NPV6TTVtRAncshZkIk5ktSAm83LBIDCZwSrGkEJd0uAoc1co9EDlLm0dFwSJlSHXSD441/Aqrrl0isEaVM0QfU7iKWsPiQ/ouYShwIzI+Ed2AcO1EYQDOICC0Dx4VqNUFoc9JGfH9S0x",
+  "manifest_version": 2,
+  "name": "ASBVoter2",
+  "short_name": "ASBVoter2",
+  "description": "",
+  "version": "0.0.1",
+  "minimum_chrome_version": "38",
+
+  "icons": {
+    "16": "assets/icon_16.png",
+    "128": "assets/icon_128.png"
+  },
+
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  
+  "permissions": [
+    "identity"
+  ],
+  
+  "oauth2": {
+    "client_id": "532496363550-g2pjv4a2ag8bb3lsha85omnctfn1okfg.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email"
+    ]
+  }
+}
