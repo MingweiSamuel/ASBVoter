@@ -1,32 +1,4 @@
-/*window.onload = function() {
-  document.querySelector('#greeting').innerText =
-    'Hello, World! It is ' + new Date();
-
-  chrome.identity.getAuthToken({
-    interactive: true
-  }, function(token) {
-    if (chrome.runtime.lastError) {
-      alert(chrome.runtime.lastError.message);
-      return;
-    }
-    var x = new XMLHttpRequest();
-    x.open('GET', 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' + token);
-    x.onload = function() {
-      alert(x.response);
-      testWrite(x.response);
-    };
-    x.send();
-  });
-  
-  testWrite("test");
-};
-
-function testWrite(str) {
-  document.querySelector('#greeting').innerText += str;
-}*/
-
-angular
-  .module('VoterApp', ['ngMaterial', 'ngMdIcons'])
+angular.module('VoterApp', ['ngMaterial', 'ngMdIcons'])
   .controller('VoterController', function ($scope, $timeout, $mdSidenav, $log) {
     $scope.toggleLeft = buildToggler('left');
     //$scope.toggleRight = buildToggler('right');
@@ -94,3 +66,50 @@ angular
         });
     };
   });*/
+
+var c = {
+  "log": function(str) {
+    document.getElementById('test').innerHTML += str + "<br>\n";
+  }
+};
+
+
+var ref = new Firebase("https://phsasbvoter.firebaseio.com");
+
+window.onload = function() {
+  //document.querySelector('#greeting').innerText =
+  //  'Hello, World! It is ' + new Date();
+  chrome.identity.getAuthToken({
+    interactive: true
+  }, function(token) {
+    c.log(token);
+
+    ref.authWithOAuthToken("google", token, function(error, authData) {
+      c.log("hullo");
+      if (error) {
+        c.log("Login Failed!" + error);
+      } else {
+        c.log("Authenticated successfully with payload:" + authData);
+      }
+    });
+
+
+    /*if (chrome.runtime.lastError) {
+      c.log(chrome.runtime.lastError.message);
+      return;
+    }*/
+    /*var x = new XMLHttpRequest();
+    x.open('GET', 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' + token);
+    x.onload = function() {
+      alert(x.response);
+      testWrite(x.response);
+    };
+    x.send();*/
+  });
+  
+  c.log("test");
+};
+
+window.onerror = function() {
+  c.log("ERROR!!!");
+};
