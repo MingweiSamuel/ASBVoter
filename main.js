@@ -1,115 +1,64 @@
-angular.module('VoterApp', ['ngMaterial', 'ngMdIcons'])
-  .controller('VoterController', function ($scope, $timeout, $mdSidenav, $log) {
-    $scope.toggleLeft = buildToggler('left');
-    //$scope.toggleRight = buildToggler('right');
-    //$scope.isOpenRight = function(){
-    //  return $mdSidenav('right').isOpen();
-    //};
+Firebase.INTERNAL.forceWebSockets();
 
-    /**
-     * Supplies a function that will continue to operate until the
-     * time is up.
-     */
-    function debounce(func, wait, context) {
-      var timer;
-
-      return function debounced() {
-        var context = $scope,
-            args = Array.prototype.slice.call(arguments);
-        $timeout.cancel(timer);
-        timer = $timeout(function() {
-          timer = undefined;
-          func.apply(context, args);
-        }, wait || 10);
-      };
-    }
-
-    /**
-     * Build handler to open/close a SideNav; when animation finishes
-     * report completion in console
-     */
-    function buildDelayedToggler(navID) {
-      return debounce(function() {
-        $mdSidenav(navID)
-          .toggle()
-          .then(function () {
-            $log.debug("toggle " + navID + " is done");
-          });
-      }, 200);
-    }
-
-    function buildToggler(navID) {
-      return function() {
-        $mdSidenav(navID)
-          .toggle()
-          .then(function () {
-            $log.debug("toggle " + navID + " is done");
-          });
-      };
-    }
-  })
-  .controller('LeftCtrl', function ($scope, $timeout, $mdSidenav, $log) {
-    $scope.close = function () {
-      $mdSidenav('left').close()
-        .then(function () {
-          $log.debug("close LEFT is done");
-        });
-
-    };
-  });
-  /*
-  .controller('RightCtrl', function ($scope, $timeout, $mdSidenav, $log) {
-    $scope.close = function () {
-      $mdSidenav('right').close()
-        .then(function () {
-          $log.debug("close RIGHT is done");
-        });
-    };
-  });*/
-
-var c = {
-  "log": function(str) {
-    document.getElementById('test').innerHTML += str + "<br>\n";
-  }
-};
-
-
-var ref = new Firebase("https://phsasbvoter.firebaseio.com");
-
-window.onload = function() {
-  //document.querySelector('#greeting').innerText =
-  //  'Hello, World! It is ' + new Date();
-  chrome.identity.getAuthToken({
-    interactive: true
-  }, function(token) {
-    c.log(token);
-
-    ref.authWithOAuthToken("google", token, function(error, authData) {
-      c.log("hullo");
-      if (error) {
-        c.log("Login Failed!" + error);
-      } else {
-        c.log("Authenticated successfully with payload:" + authData);
-      }
-    });
-
-
-    /*if (chrome.runtime.lastError) {
-      c.log(chrome.runtime.lastError.message);
-      return;
-    }*/
-    /*var x = new XMLHttpRequest();
-    x.open('GET', 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=' + token);
-    x.onload = function() {
-      alert(x.response);
-      testWrite(x.response);
-    };
-    x.send();*/
-  });
+angular.module('VoterApp', ['ngMaterial', 'ngMdIcons', 'firebase', 'relativeDate'], function($compileProvider) {
   
-  c.log("test");
-};
-
-window.onerror = function() {
-  c.log("ERROR!!!");
-};
+  //prevent ng-src from expanding to full url
+  $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|blob|file|chrome-extension):|data:image\//);
+  //prevent anchors from being expaneded
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|chrome-extension):/);
+  
+}).directive('srcBlob', function() {
+    return {
+        link: function(scope, element, attrs) {
+          attrs.$observe('srcBlob', function(val){
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', val, true);
+            xhr.responseType = 'blob';
+            xhr.onload = function(e) {
+              var src = window.URL.createObjectURL(this.response);
+              attrs.$set('src', src);
+            };
+            xhr.send();
+          });
+        }
+    };
+}).config(function($mdThemingProvider) {
+  $mdThemingProvider.theme('default')
+    .primaryPalette('deep-purple')
+    .accentPalette('pink');
+}).controller('VoterController', function($scope, $mdSidenav, $log, $firebaseAuth, $firebaseObject, $firebaseArray) {
+  
+  var ref = new Firebase("https://phsasbvoter.firebaseio.com");
+  
+  
+  $scope.toggleLeft = function() {
+    $mdSidenav('left').toggle();
+  };
+  
+  $scope.auth = $firebaseAuth(ref);
+  $scope.auth.$onAuth(function(authData) {
+    if (!authData) {
+      $log.warn('Logged out! Reauthenticating...');
+      chrome.identity.getAuthToken({
+        interactive: true
+      }, function(token) {
+        $scope.auth.$authWithOAuthToken("google", token);
+      });
+    }
+    else {
+      $log.log('Authenticated', authData);
+      ref.child('users/' + authData.uid).set({
+        name: authData.google.displayName,
+        avatar: authData.google.profileImageURL
+      });
+      
+      var norm = new Firebase.util.NormalizedCollection(
+        ref.child('polls'),
+        [ref.child('users'), 'users', 'polls.owner']
+      );
+      var pollsRef = norm.select('polls.owner', { key: 'polls.$value', alias: 'poll' }, { key: 'users.$value', alias: 'user' }).ref();
+      
+      $scope.polls = $firebaseArray(pollsRef);
+    }
+  });
+});

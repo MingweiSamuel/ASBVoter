@@ -7,3 +7,7 @@ body {
 md-toolbar .md-icon-button ng-md-icon {
   fill: rgba(255,255,255,0.87);
 }
+
+md-card md-card img, md-card > :not(md-card-content) img {
+  height: 100%;
+}

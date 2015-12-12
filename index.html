@@ -9,23 +9,25 @@
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-animate/angular-animate.js"></script>
   <script src="bower_components/angular-aria/angular-aria.js"></script>
+  <script src="bower_components/angular-relative-date/angular-relative-date.js"></script>
   <script src="bower_components/ng-sortable/dist/ng-sortable.js"></script>
   <script src="bower_components/angular-material/angular-material.js"></script>
   <script src="bower_components/angular-material-icons/angular-material-icons.js"></script>
   <script src="bower_components/svg-morpheus/compile/unminified/svg-morpheus.js"></script>
   <script src="bower_components/firebase/firebase.js"></script>
-  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/firebase-util/dist/firebase-util.js"></script>
+  <script src="bower_components/angularfire/dist/angularfire.js"></script>
 </head>
 
-<body ng-cloak="" ng-controller="VoterController" layout="column">
-  <section layout="row" flex="">
+<body ng-controller="VoterController" layout="column">
+  <div layout="row" flex="" ng-cloak="">
     
     <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
 
       <md-toolbar class="md-theme-indigo">
         <h1 class="md-toolbar-tools">Sidenav Left</h1>
       </md-toolbar>
-      <md-content layout-padding="" ng-controller="LeftCtrl">
+      <md-content layout-padding="">
         <P>Hello to the content</P>
       </md-content>
 
@@ -38,10 +40,8 @@
           <md-button class="md-icon-button" hide-gt-md="" ng-click="toggleLeft()" aria-label="Menu">
             <ng-md-icon icon="menu"></ng-md-icon>
           </md-button>
-          <h2>
-            <span>ASB Voter</span>
-          </h2>
-          <span flex=""></span>
+          <h2>ASB Voter</h2>
+          <span flex=""></span><!-- pushes content right -->
           <md-button class="md-icon-button" aria-label="Favorite">
             <ng-md-icon icon="favorite"></ng-md-icon>
           </md-button>
@@ -51,14 +51,54 @@
         </div>
       </md-toolbar>
 
-      <div layout="column" layout-fill="" layout-align="top center">
-        <p id="test">
-        The left sidenav will 'lock open' on a medium (>=960px wide) device.
-        </p>
+      <div layout="column" layout-align="top center">
+        <md-content layout-padding>
+          <p>
+          The left sidenav will 'lock open' on a medium (>=960px wide) device.
+          </p>
+          <p>{{ polls | json }}</p>
+        </md-content>
       </div>
+      <md-content>
+        <div flex>
+          <md-card ng-repeat="pollMeta in polls">
+            <md-card-header>
+              <md-card-avatar>
+                <img class="md-user-avatar" src-blob="{{ pollMeta.user.avatar }}">
+              </md-card-avatar>
+              <md-card-header-text>
+                <span class="md-title" ng-bind="pollMeta.user.name"></span>
+                <span class="md-subhead" ng-bind="pollMeta.poll.timestamp * 1000 | relativeDate"></span>
+              </md-card-header-text>
+            </md-card-header>
+            <img ng-src="assets/icon_128.png" class="md-card-image" alt="Washed Out">
+            <md-card-title>
+              <md-card-title-text>
+                <span class="md-headline" ng-bind="pollMeta.poll.question"></span>
+                <span class="md-subhead">Reversed</span>
+              </md-card-title-text>
+            </md-card-title>
+            <md-card-actions layout="row" layout-align="start center">
+              <md-button>Action 1</md-button>
+              <md-button>Action 2</md-button>
+              <md-card-icon-actions>
+                <md-button class="md-icon-button" aria-label="toggle">
+                  <md-icon md-svg-icon="md-toggle-arrow"></md-icon>
+                </md-button>
+              </md-card-icon-actions>
+            </md-card-actions>
+            <md-card-content>
+              <p>
+                The titles of Washed Out's breakthrough song and the first single from Paracosm share the
+                two most important words in Ernest Greene's musical language: feel it. It's a simple request, as well...
+              </p>
+            </md-card-content>
+          </md-card>
+        </div>
+      </md-content>
 
     </md-content>
-  </section>
+  </div>
   <script src="main.js"></script>
 </body>
 </html>
