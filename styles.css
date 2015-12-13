@@ -1,4 +1,5 @@
-/* CSS file placeholder. */
+/*** hacks ***/
+
 body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   /* override "injected stylesheet" ? */
@@ -10,4 +11,53 @@ md-toolbar .md-icon-button ng-md-icon {
 
 md-card md-card img, md-card > :not(md-card-content) img {
   height: 100%;
+}
+
+/* angular-material-icons uses svg, so line height screws up */
+.md-button.md-fab {
+  line-height: 0px;
+}
+
+
+/*** stylings ***/
+
+.ribbon {
+  position: absolute;
+  height: 450px;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+
+.ribbon-after {
+  z-index: 1;
+  margin-top: 10px;
+}
+@media (min-width: 960px) {
+  .ribbon-after {
+    margin-top: 80px;
+  }
+}
+
+
+/* warning: hacked */
+.fab-container {
+  position: absolute;
+  height: 100px;
+  
+  top: auto;
+  bottom: 0px;
+  left: auto;
+  right: 0px;
+  width: 40px;
+}
+@media (min-width: 600px) {
+  .fab-container {
+    top: 100px;
+    bottom: auto;
+    left: 0px;
+    right: auto;
+    width: 100%;
+  }
 }

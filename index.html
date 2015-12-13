@@ -2,7 +2,7 @@
 <html lang="en" ng-app="VoterApp">
 <head>
   <title>ASBVoter2</title>
-  <link rel="stylesheet" href="bower_components/roboto-fontface/css/roboto-fontface.css">
+  <!--<link rel="stylesheet" href="bower_components/roboto-fontface/css/roboto-fontface.css">-->
   <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
   <link rel="stylesheet" href="styles.css">
   
@@ -20,7 +20,7 @@
 </head>
 
 <body ng-controller="VoterController" layout="column">
-  <div layout="row" flex="" ng-cloak="">
+  <div layout="row" flex ng-cloak="">
     
     <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
 
@@ -28,20 +28,21 @@
         <h1 class="md-toolbar-tools">Sidenav Left</h1>
       </md-toolbar>
       <md-content layout-padding="">
-        <P>Hello to the content</P>
+        <p>Hello to the content</p>
+        <p>{{ polls | json }}</p>
       </md-content>
 
     </md-sidenav>
 
-    <md-content flex="">
+    <div flex layout="column">
       
-      <md-toolbar>
+      <md-toolbar class="md-whiteframe-4dp"><!-- does no scroll -->
         <div class="md-toolbar-tools">
-          <md-button class="md-icon-button" hide-gt-md="" ng-click="toggleLeft()" aria-label="Menu">
+          <md-button class="md-icon-button" hide-gt-md ng-click="toggleLeft()" aria-label="Menu">
             <ng-md-icon icon="menu"></ng-md-icon>
           </md-button>
           <h2>ASB Voter</h2>
-          <span flex=""></span><!-- pushes content right -->
+          <span flex></span><!-- pushes content right - doesn't seem to be a flex-offset option :( -->
           <md-button class="md-icon-button" aria-label="Favorite">
             <ng-md-icon icon="favorite"></ng-md-icon>
           </md-button>
@@ -50,55 +51,69 @@
           </md-button>
         </div>
       </md-toolbar>
-
-      <div layout="column" layout-align="top center">
-        <md-content layout-padding>
-          <p>
-          The left sidenav will 'lock open' on a medium (>=960px wide) device.
-          </p>
-          <p>{{ polls | json }}</p>
+      
+      
+      
+      <div layout-fill flex layout="column" style="position: relative;">
+        
+        <!-- button floating around -->
+        <div class="fab-container" layout="column">
+          <!--<div hide show-xs style="height: %;"></div>-->
+          <!-- flex-offset is horizontal only #hax -->
+          <div flex-offset-gt-md="80" flex-offset-gt-sm="90" flex-offset-gt-xs="95" flex-offset="0">
+            <md-button class="md-fab md-whiteframe-12dp" style="transform: translateX(-100%);">
+              <ng-md-icon icon="add" style="fill: white;"></ng-md-icon>
+            </md-button>
+          </div>
+        </div>
+        
+        <md-content ng-style="{ 'background-color': colors.background.hue1 }" flex layout="column"><!-- has internal scrollbar -->
+          <div class="ribbon" hide show-gt-md flex="none" background-blob="{{ meta.cover }}"></div>
+          <div class="ribbon-after" layout="row">
+            <div layout="column" flex-offset-gt-md="20" flex-gt-md="60" flex-offset-gt-sm="10" flex-gt-sm="80" flex-offset-gt-xs="5" flex-gt-xs="90" flex>
+              <md-card ng-repeat="pollMeta in polls">
+                <md-card-header>
+                  <md-card-avatar>
+                    <img class="md-user-avatar" src-blob="{{ pollMeta.user.avatar }}">
+                  </md-card-avatar>
+                  <md-card-header-text>
+                    <span class="md-title" ng-bind="pollMeta.user.name"></span>
+                    <span class="md-subhead" ng-bind="pollMeta.poll.timestamp * 1000 | relativeDate"></span>
+                  </md-card-header-text>
+                </md-card-header>
+                <img ng-src="assets/icon_128.png" class="md-card-image" alt="Washed Out">
+                <md-card-title>
+                  <md-card-title-text>
+                    <span class="md-headline" ng-bind="pollMeta.poll.question"></span>
+                    <span class="md-subhead">Reversed</span>
+                  </md-card-title-text>
+                </md-card-title>
+                <md-card-actions layout="row" layout-align="start center">
+                  <md-button>Action 1</md-button>
+                  <md-button>Action 2</md-button>
+                  <md-card-icon-actions>
+                    <md-button class="md-icon-button" aria-label="toggle">
+                      <md-icon md-svg-icon="md-toggle-arrow"></md-icon>
+                    </md-button>
+                  </md-card-icon-actions>
+                </md-card-actions>
+                <md-card-content>
+                  <p>
+                    The titles of Washed Out's breakthrough song and the first single from Paracosm share the
+                    two most important words in Ernest Greene's musical language: feel it. It's a simple request, as well...
+                  </p>
+                </md-card-content>
+              </md-card>
+            </div>
+          </div>
         </md-content>
       </div>
-      <md-content>
-        <div flex>
-          <md-card ng-repeat="pollMeta in polls">
-            <md-card-header>
-              <md-card-avatar>
-                <img class="md-user-avatar" src-blob="{{ pollMeta.user.avatar }}">
-              </md-card-avatar>
-              <md-card-header-text>
-                <span class="md-title" ng-bind="pollMeta.user.name"></span>
-                <span class="md-subhead" ng-bind="pollMeta.poll.timestamp * 1000 | relativeDate"></span>
-              </md-card-header-text>
-            </md-card-header>
-            <img ng-src="assets/icon_128.png" class="md-card-image" alt="Washed Out">
-            <md-card-title>
-              <md-card-title-text>
-                <span class="md-headline" ng-bind="pollMeta.poll.question"></span>
-                <span class="md-subhead">Reversed</span>
-              </md-card-title-text>
-            </md-card-title>
-            <md-card-actions layout="row" layout-align="start center">
-              <md-button>Action 1</md-button>
-              <md-button>Action 2</md-button>
-              <md-card-icon-actions>
-                <md-button class="md-icon-button" aria-label="toggle">
-                  <md-icon md-svg-icon="md-toggle-arrow"></md-icon>
-                </md-button>
-              </md-card-icon-actions>
-            </md-card-actions>
-            <md-card-content>
-              <p>
-                The titles of Washed Out's breakthrough song and the first single from Paracosm share the
-                two most important words in Ernest Greene's musical language: feel it. It's a simple request, as well...
-              </p>
-            </md-card-content>
-          </md-card>
-        </div>
-      </md-content>
+      
+    </div>
 
-    </md-content>
+    <!--</div>-->
   </div>
+  <script src="colors.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
