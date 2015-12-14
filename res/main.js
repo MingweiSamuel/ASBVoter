@@ -1,28 +1,41 @@
 (function() {
   "use strict";
+  
+  
+  //////// GENERAL ////////
+  
+  /* uses websockets instead of hosted scripts for the content security */
   Firebase.INTERNAL.forceWebSockets();
   
-  angular.module('VoterApp', ['ngMaterial', 'ngMdIcons', 'firebase', 'relativeDate', 'mdThemeColors'], function($compileProvider) {
+  /* Create voter app */
+  var voterApp = angular.module('voterApp', ['ngRoute', 'ngAnimate', 'ngMaterial', 'ngMdIcons', 'firebase', 'relativeDate', 'mdThemeColors'], function($compileProvider) {
     
-    //prevent ng-src from expanding to full url
+    //prevent ng-src from expanding to full url, allow blobs
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|blob|file|chrome-extension):|data:image\//);
     //prevent anchors from being expaneded
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|chrome-extension):/);
     
-  }).directive('srcBlob', function() {
+  });
+  
+  /* custom blob directives */
+  function getBlob(url, callback) {
+    if (!url)
+      return;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'blob';
+    xhr.onload = function(e) {
+      callback(window.URL.createObjectURL(this.response));
+    };
+    xhr.send();
+  }
+  voterApp.directive('srcBlob', function() {
       return {
           link: function(scope, element, attrs) {
             attrs.$observe('srcBlob', function(val) {
-              if (!val)
-                return;
-              var xhr = new XMLHttpRequest();
-              xhr.open('GET', val, true);
-              xhr.responseType = 'blob';
-              xhr.onload = function(e) {
-                var src = window.URL.createObjectURL(this.response);
+              getBlob(val, function(src) {
                 attrs.$set('src', src);
-              };
-              xhr.send();
+              });
             });
           }
       };
@@ -30,31 +43,53 @@
       return {
           link: function(scope, element, attrs) {
             attrs.$observe('backgroundBlob', function(val) {
-              if (!val)
-                return;
-              var xhr = new XMLHttpRequest();
-              xhr.open('GET', val, true);
-              xhr.responseType = 'blob';
-              xhr.onload = function(e) {
-                var src = window.URL.createObjectURL(this.response);
-                element.css('background-image', 'url("' + src + '")');
-              };
-              xhr.send();
+              getBlob(val, function(url) {
+                element.css('background-image', 'url("' + url + '")');
+              });
             });
           }
       };
-  }).config(function($mdThemingProvider) {
+  });
+  
+  /* configure material design theme */
+  voterApp.config(function($mdThemingProvider) {
     $mdThemingProvider.theme('default')
-      .primaryPalette('deep-purple')
+      .primaryPalette('purple')
       .accentPalette('pink');
-  }).controller('VoterController', function($scope, $mdSidenav, $log, $firebaseAuth, $firebaseObject, $firebaseArray, mdThemeColors) {
+  });
+  
+  
+  //////// APP-SPECIFIC LOGIC ////////
+  
+  /* rotue configuration */
+  voterApp.config(function($routeProvider) {
+    $routeProvider.when('/', {
+        templateUrl: 'pages/main.html',
+        controller: 'mainController'
+    }).when('/loading', {
+        templateUrl: 'pages/loading.html',
+        //controller: 'detailController'
+    }).otherwise({
+        title: "Unknown Page",
+        templateUrl: 'pages/unknown.html'
+    });
+  });
+  
+  /* main controller */
+  voterApp.controller('voterController', function($scope, $location, mdThemeColors) {
+    
+    $scope.colors = mdThemeColors;
+    $scope.isActive = function(location) {
+        return location === $location.path();
+    };
+  });
+  
+  
+  voterApp.controller('mainController', function($scope, $mdSidenav, $log, $firebaseAuth, $firebaseObject, $firebaseArray, mdThemeColors) {
     
     $scope.colors = mdThemeColors;
     $scope.toggleLeft = function() {
       $mdSidenav('left').toggle();
-    };
-    $scope.viewportWidth = function() {
-      return window.innerWidth;
     };
     
     var ref = new Firebase("https://phsasbvoter.firebaseio.com");

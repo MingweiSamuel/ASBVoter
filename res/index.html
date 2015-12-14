@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="voterApp">
+<head>
+  <title>ASBVoter2</title>
+  <!--<link rel="stylesheet" href="bower_components/roboto-fontface/css/roboto-fontface.css">-->
+  <link rel="stylesheet" href="/bower_components/angular-material/angular-material.css">
+  <link rel="stylesheet" href="styles.css">
+  
+  <script src="/bower_components/angular/angular.js"></script>
+  <script src="/bower_components/angular-route/angular-route.js"></script>
+  <script src="/bower_components/angular-animate/angular-animate.js"></script>
+  <script src="/bower_components/angular-aria/angular-aria.js"></script>
+  <script src="/bower_components/angular-relative-date/angular-relative-date.js"></script>
+  <script src="/bower_components/ng-sortable/dist/ng-sortable.js"></script>
+  <script src="/bower_components/angular-material/angular-material.js"></script>
+  <script src="/bower_components/angular-material-icons/angular-material-icons.js"></script>
+  <script src="/bower_components/svg-morpheus/compile/unminified/svg-morpheus.js"></script>
+  <script src="/bower_components/firebase/firebase.js"></script>
+  <script src="/bower_components/firebase-util/dist/firebase-util.js"></script>
+  <script src="/bower_components/angularfire/dist/angularfire.js"></script>
+</head>
+
+<body ng-controller="voterController">
+  <!-- content container -->
+  <div ng-view layout="column" layout-fill flex ng-cloak></div>
+  
+  <script src="colors.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
