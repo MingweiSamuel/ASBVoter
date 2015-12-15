@@ -106,10 +106,15 @@
       }
       else {
         $log.log('Authenticated', authData);
-        ref.child('users/' + authData.uid).set({
-          name: authData.google.displayName,
+        
+        ref.child('users/' + authData.uid).set({ // CHECK SECURITY RULES WHEN name IS UNDEFINED
+          name: authData.google.displayName || authData.google.email, // use email if name not set
           avatar: authData.google.profileImageURL
         });
+        
+        $scope.name = authData.google.displayName;
+        $scope.avatar = authData.google.profileImageURL;
+        $scope.authData = authData;
         
         $scope.meta = $firebaseObject(ref.child('meta'));
         
